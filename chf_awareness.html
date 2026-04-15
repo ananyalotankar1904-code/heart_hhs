@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeartWatch — CHF Awareness</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #c0392b;
+    --red-light: #e74c3c;
+    --red-pale: #fdf2f2;
+    --dark: #1a1a1a;
+    --mid: #444;
+    --light: #f8f4f4;
+    --white: #ffffff;
+    --accent: #8b0000;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #f0e0e0;
+    padding: 16px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700;
+    color: var(--red);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo span { font-size: 24px; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    text-decoration: none; color: var(--mid);
+    font-size: 14px; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--red); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a0505 0%, #3d0c0c 40%, #7b1a1a 100%);
+    display: flex; align-items: center;
+    padding: 100px 48px 60px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -100px; right: -100px;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(192,57,43,0.3) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  .hero::after {
+    content: '♥';
+    position: absolute; right: 80px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 320px; color: rgba(255,255,255,0.04);
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.1); opacity: 1; }
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: translateY(-50%) scale(1); }
+    14% { transform: translateY(-50%) scale(1.05); }
+    28% { transform: translateY(-50%) scale(1); }
+    42% { transform: translateY(-50%) scale(1.05); }
+    56% { transform: translateY(-50%) scale(1); }
+  }
+  .hero-content { max-width: 650px; position: relative; z-index: 1; }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(192,57,43,0.4);
+    border: 1px solid rgba(192,57,43,0.6);
+    color: #ffaaaa;
+    padding: 6px 16px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 5vw, 68px);
+    font-weight: 900; line-height: 1.1;
+    color: var(--white); margin-bottom: 24px;
+  }
+  .hero h1 em { color: #ff8080; font-style: italic; }
+  .hero p {
+    font-size: 18px; line-height: 1.7;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 40px; max-width: 520px;
+  }
+  .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--red); color: white;
+    padding: 14px 32px; border-radius: 6px;
+    font-weight: 600; font-size: 15px;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: all 0.2s; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--red-light); transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: white;
+    padding: 14px 32px; border-radius: 6px;
+    font-weight: 600; font-size: 15px;
+    text-decoration: none; border: 1px solid rgba(255,255,255,0.3);
+    cursor: pointer; transition: all 0.2s; display: inline-block;
+  }
+  .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.1); }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--dark);
+    padding: 32px 48px;
+    display: flex; justify-content: space-around; flex-wrap: wrap; gap: 24px;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px; font-weight: 700; color: var(--red-light);
+  }
+  .stat-label { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+  /* SECTIONS */
+  section { padding: 80px 48px; }
+  .section-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--red);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 700; line-height: 1.2;
+    color: var(--dark); margin-bottom: 16px;
+  }
+  .section-sub {
+    font-size: 16px; color: #666; line-height: 1.7;
+    max-width: 560px; margin-bottom: 48px;
+  }
+
+  /* WHAT IS CHF */
+  .what-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px; margin-top: 48px;
+  }
+  .what-card {
+    background: var(--light);
+    border-radius: 12px; padding: 32px;
+    border-left: 4px solid var(--red);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .what-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(192,57,43,0.12); }
+  .what-card .icon { font-size: 36px; margin-bottom: 16px; }
+  .what-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--dark); }
+  .what-card p { font-size: 14px; color: #666; line-height: 1.7; }
+
+  /* SYMPTOM CHECKER */
+  .checker-section { background: var(--red-pale); }
+  .symptoms-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin-bottom: 32px;
+  }
+  .symptom-btn {
+    background: white; border: 2px solid #e0c0c0;
+    border-radius: 10px; padding: 20px 16px;
+    cursor: pointer; text-align: center;
+    transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .symptom-btn .sym-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+  .symptom-btn .sym-name { font-size: 13px; font-weight: 600; color: var(--dark); display: block; }
+  .symptom-btn:hover { border-color: var(--red); background: #fff5f5; }
+  .symptom-btn.selected { border-color: var(--red); background: var(--red); }
+  .symptom-btn.selected .sym-name { color: white; }
+  .risk-result {
+    background: white; border-radius: 12px; padding: 28px 32px;
+    border: 2px solid #e0c0c0; min-height: 80px;
+    display: flex; align-items: center; gap: 16px;
+    font-size: 16px; color: #666;
+  }
+  .risk-result .risk-icon { font-size: 32px; }
+  .risk-result .risk-text strong { display: block; font-size: 18px; margin-bottom: 4px; }
+  .risk-result.low { border-color: #27ae60; }
+  .risk-result.low .risk-text strong { color: #27ae60; }
+  .risk-result.med { border-color: #f39c12; }
+  .risk-result.med .risk-text strong { color: #f39c12; }
+  .risk-result.high { border-color: var(--red); }
+  .risk-result.high .risk-text strong { color: var(--red); }
+  .checker-cta {
+    margin-top: 12px; font-size: 13px; color: #888;
+    font-style: italic;
+  }
+
+  /* TECH SECTION */
+  .tech-section { background: var(--dark); }
+  .tech-section .section-title { color: white; }
+  .tech-section .section-sub { color: rgba(255,255,255,0.5); }
+  .tech-section .section-tag { color: #ff8080; }
+  .tech-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  .tech-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 28px;
+    transition: all 0.2s;
+  }
+  .tech-card:hover {
+    background: rgba(192,57,43,0.15);
+    border-color: rgba(192,57,43,0.4);
+    transform: translateY(-4px);
+  }
+  .tech-card .t-icon { font-size: 32px; margin-bottom: 14px; }
+  .tech-card h3 { font-size: 16px; font-weight: 600; color: white; margin-bottom: 10px; }
+  .tech-card p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+  .tech-badge {
+    display: inline-block; margin-top: 12px;
+    background: rgba(192,57,43,0.3); color: #ff9999;
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    padding: 4px 10px; border-radius: 4px;
+  }
+
+  /* NYHA STAGES */
+  .stages-section { background: white; }
+  .stages-track {
+    display: flex; gap: 0; margin-top: 48px;
+    border-radius: 12px; overflow: hidden;
+  }
+  .stage {
+    flex: 1; padding: 28px 20px; text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.2);
+  }
+  .stage:last-child { border-right: none; }
+  .stage-1 { background: #fff0f0; }
+  .stage-2 { background: #ffd5d5; }
+  .stage-3 { background: #ffaaaa; }
+  .stage-4 { background: #cc3333; }
+  .stage-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px; font-weight: 900;
+    margin-bottom: 8px;
+  }
+  .stage-1 .stage-num { color: #cc8888; }
+  .stage-2 .stage-num { color: #cc4444; }
+  .stage-3 .stage-num { color: #aa1111; }
+  .stage-4 .stage-num { color: white; }
+  .stage h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .stage-4 h4 { color: white; }
+  .stage p { font-size: 12px; color: #666; line-height: 1.5; }
+  .stage-4 p { color: rgba(255,255,255,0.8); }
+
+  /* CTA FOOTER */
+  .cta-section {
+    background: linear-gradient(135deg, #8b0000, #c0392b);
+    text-align: center; padding: 80px 48px;
+  }
+  .cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    color: white; margin-bottom: 16px;
+  }
+  .cta-section p { color: rgba(255,255,255,0.75); font-size: 17px; margin-bottom: 36px; }
+  .cta-section .btn-primary {
+    background: white; color: var(--red);
+    font-size: 16px; padding: 16px 40px;
+  }
+  .cta-section .btn-primary:hover { background: #fff5f5; }
+
+  footer {
+    background: var(--dark); color: rgba(255,255,255,0.4);
+    text-align: center; padding: 24px 48px;
+    font-size: 13px;
+  }
+  footer strong { color: rgba(255,255,255,0.7); }
+
+  @media (max-width: 768px) {
+    nav { padding: 14px 24px; }
+    .nav-links { display: none; }
+    section { padding: 60px 24px; }
+    .hero { padding: 100px 24px 60px; }
+    .hero::after { display: none; }
+    .stats-bar { padding: 24px; }
+    .stages-track { flex-direction: column; }
+    .stage { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.2); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>♥</span> HeartWatch</div>
+  <div class="nav-links">
+    <a href="#what">About CHF</a>
+    <a href="#checker">Symptom Check</a>
+    <a href="#tech">Technology</a>
+    <a href="#stages">Stages</a>
+    <a href="#cta">Get Help</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-tag">❤️ CHF Awareness Platform</div>
+    <h1>Is Your Heart<br>Trying to <em>Tell You</em><br>Something?</h1>
+    <p>Congestive Heart Failure affects over 64 million people worldwide — yet most ignore the warning signs for years. Early detection saves lives.</p>
+    <div class="hero-btns">
+      <a href="#checker" class="btn-primary">Check Your Symptoms</a>
+      <a href="#what" class="btn-outline">Learn About CHF</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num">64M+</div>
+    <div class="stat-label">People affected worldwide</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">50%</div>
+    <div class="stat-label">Die within 5 years of diagnosis</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">26M</div>
+    <div class="stat-label">Cases in Asia alone</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">80%</div>
+    <div class="stat-label">Cases preventable with early action</div>
+  </div>
+</div>
+
+<!-- WHAT IS CHF -->
+<section id="what">
+  <div class="section-tag">Understanding CHF</div>
+  <div class="section-title">What is Congestive<br>Heart Failure?</div>
+  <div class="section-sub">CHF doesn't mean the heart stops — it means the heart can't pump efficiently enough to meet the body's needs. Fluid builds up, organs suffer, and life quality drops rapidly.</div>
+  <div class="what-grid">
+    <div class="what-card">
+      <div class="icon">🫀</div>
+      <h3>What It Is</h3>
+      <p>The heart muscle weakens or stiffens, reducing its ability to pump blood. Blood backs up, causing fluid to accumulate in the lungs, legs, and abdomen.</p>
+    </div>
+    <div class="what-card">
+      <div class="icon">⚠️</div>
+      <h3>Who's at Risk</h3>
+      <p>People with coronary artery disease, high blood pressure, diabetes, or a history of heart attacks. Age, obesity, and smoking significantly raise risk.</p>
+    </div>
+    <div class="what-card">
+      <div class="icon">📉</div>
+      <h3>Why It's Dangerous</h3>
+      <p>CHF is progressive — it gets worse over time without treatment. It strains the kidneys, liver, and lungs, and increases stroke and cardiac arrest risk.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SYMPTOM CHECKER -->
+<section id="checker" class="checker-section">
+  <div class="section-tag">Interactive Tool</div>
+  <div class="section-title">Symptom Checker</div>
+  <div class="section-sub">Select any symptoms you or a loved one are experiencing. This is not a diagnosis — it's an awareness tool to help you decide if you should seek medical advice.</div>
+
+  <div class="symptoms-grid">
+    <div class="symptom-btn" onclick="toggleSymptom(this, 3)" data-score="3">
+      <span class="sym-icon">😮‍💨</span>
+      <span class="sym-name">Breathlessness</span>
+    </div>
+    <div class="symptom-btn" onclick="toggleSymptom(this, 2)" data-score="2">
+      <span class="sym-icon">🦵</span>
+      <span class="sym-name">Leg / Ankle Swelling</span>
+    </div>
+    <div class="symptom-btn" onclick="toggleSymptom(this, 2)" data-score="2">
+      <span class="sym-icon">😴</span>
+      <span class="sym-name">Extreme Fatigue</span>
+    </div>
+    <div class="symptom-btn" onclick="toggleSymptom(this, 3)" data-score="3">
+      <span class="sym-icon">🛌</span>
+      <span class="sym-name">Can't Lie Flat to Sleep</span>
+    </div>
+    <div class="symptom-btn" onclick="toggleSymptom(this, 2)" data-score="2">
+      <span class="sym-icon">💓</span>
+      <span class="sym-name">Rapid Heartbeat</span>
+    </div>
+    <div class="symptom-btn" onclick="toggleSymptom(this, 1)" data-score="1">
+      <span class="sym-icon">🤢</span>
+      <span class="sym-name">Nausea / No Appetite</span>
+    </div>
+    <div class="symptom-btn" onclick="toggleSymptom(this, 2)" data-score="2">
+      <span class="sym-icon">🧠</span>
+      <span class="sym-name">Confusion / Brain Fog</span>
+    </div>
+    <div class="symptom-btn" onclick="toggleSymptom(this, 1)" data-score="1">
+      <span class="sym-icon">⚖️</span>
+      <span class="sym-name">Sudden Weight Gain</span>
+    </div>
+  </div>
+
+  <div class="risk-result" id="riskResult">
+    <div class="risk-icon">👆</div>
+    <div class="risk-text">
+      <strong>Select your symptoms above</strong>
+      Tap any symptoms you're experiencing to assess your risk level.
+    </div>
+  </div>
+  <p class="checker-cta">* This tool is for awareness only. Always consult a qualified cardiologist for a proper diagnosis.</p>
+</section>
+
+<!-- NYHA STAGES -->
+<section id="stages" class="stages-section">
+  <div class="section-tag">Disease Progression</div>
+  <div class="section-title">The 4 Stages of CHF</div>
+  <div class="section-sub">The New York Heart Association (NYHA) classifies CHF in 4 stages — from no symptoms to severe disability. Early detection at Stage 1–2 dramatically improves outcomes.</div>
+  <div class="stages-track">
+    <div class="stage stage-1">
+      <div class="stage-num">I</div>
+      <h4>No Limitation</h4>
+      <p>Heart disease present but no symptoms during normal activity. Easily missed without tests.</p>
+    </div>
+    <div class="stage stage-2">
+      <div class="stage-num">II</div>
+      <h4>Slight Limitation</h4>
+      <p>Comfortable at rest; symptoms appear with moderate exertion — climbing stairs, walking fast.</p>
+    </div>
+    <div class="stage stage-3">
+      <div class="stage-num">III</div>
+      <h4>Marked Limitation</h4>
+      <p>Comfortable only at rest. Even light activity — dressing, walking slowly — causes symptoms.</p>
+    </div>
+    <div class="stage stage-4">
+      <div class="stage-num">IV</div>
+      <h4>Severe</h4>
+      <p>Symptoms at rest. Any physical activity increases discomfort. Hospitalization often required.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TECH SECTION -->
+<section id="tech" class="tech-section">
+  <div class="section-tag">Innovation in Cardiology</div>
+  <div class="section-title">Technology Fighting CHF</div>
+  <div class="section-sub">From wearable sensors to AI diagnostics, technology is transforming how we detect, monitor, and manage heart failure — earlier and more accurately than ever before.</div>
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="t-icon">⌚</div>
+      <h3>Wearable ECG Monitors</h3>
+      <p>Devices like Apple Watch and KardiaMobile continuously track heart rhythm, detecting irregular patterns that signal CHF deterioration before symptoms worsen.</p>
+      <span class="tech-badge">WEARABLE TECH</span>
+    </div>
+    <div class="tech-card">
+      <div class="t-icon">🤖</div>
+      <h3>AI Diagnostic Tools</h3>
+      <p>Machine learning models analyze echocardiograms and ECGs with over 90% accuracy, flagging early-stage CHF that human eyes might miss on routine scans.</p>
+      <span class="tech-badge">ARTIFICIAL INTELLIGENCE</span>
+    </div>
+    <div class="tech-card">
+      <div class="t-icon">📡</div>
+      <h3>Implantable Sensors</h3>
+      <p>CardioMEMS and similar devices implanted in the pulmonary artery measure pressure changes, sending alerts to doctors before fluid buildup becomes critical.</p>
+      <span class="tech-badge">IMPLANTABLE TECH</span>
+    </div>
+    <div class="tech-card">
+      <div class="t-icon">📱</div>
+      <h3>Remote Monitoring Apps</h3>
+      <p>Patients log symptoms daily via smartphone. AI models detect patterns — subtle weight gain, reduced activity — and alert care teams to intervene early.</p>
+      <span class="tech-badge">DIGITAL HEALTH</span>
+    </div>
+    <div class="tech-card">
+      <div class="t-icon">💻</div>
+      <h3>Telemedicine Platforms</h3>
+      <p>Virtual cardiology consultations reduce hospital readmission rates by 25–30%. Patients in Tier 2 and 3 cities can access specialist care without travel.</p>
+      <span class="tech-badge">TELEMEDICINE</span>
+    </div>
+    <div class="tech-card">
+      <div class="t-icon">🌐</div>
+      <h3>Awareness Platforms</h3>
+      <p>Web tools like HeartWatch bridge the literacy gap — educating patients, enabling self-screening, and connecting them to verified cardiologists and resources.</p>
+      <span class="tech-badge">HEALTH TECH</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta" class="cta-section">
+  <h2>Don't Wait for a Crisis.<br>Act Now.</h2>
+  <p>If you or someone you love is experiencing CHF symptoms,<br>please speak to a cardiologist today. Early treatment changes everything.</p>
+  <a href="#checker" class="btn-primary">Check Symptoms Again</a>
+</section>
+
+<footer>
+  <p><strong>HeartWatch</strong> — A CHF Awareness Platform &nbsp;|&nbsp; Built for education purposes only. Not a substitute for medical advice. &nbsp;|&nbsp; Always consult a qualified cardiologist.</p>
+</footer>
+
+<script>
+  let totalScore = 0;
+  const scores = new Map();
+
+  function toggleSymptom(btn, score) {
+    const key = btn.querySelector('.sym-name').textContent;
+    if (btn.classList.contains('selected')) {
+      btn.classList.remove('selected');
+      totalScore -= scores.get(key) || 0;
+      scores.delete(key);
+    } else {
+      btn.classList.add('selected');
+      scores.set(key, score);
+      totalScore += score;
+    }
+    updateRisk();
+  }
+
+  function updateRisk() {
+    const el = document.getElementById('riskResult');
+    el.className = 'risk-result';
+    if (scores.size === 0) {
+      el.innerHTML = `<div class="risk-icon">👆</div><div class="risk-text"><strong>Select your symptoms above</strong>Tap any symptoms you're experiencing to assess your risk level.</div>`;
+      return;
+    }
+    if (totalScore <= 2) {
+      el.classList.add('low');
+      el.innerHTML = `<div class="risk-icon">🟢</div><div class="risk-text"><strong>Low Risk — Stay Aware</strong>Your symptoms are mild. Monitor your health, maintain a heart-healthy lifestyle, and consult a doctor if symptoms worsen.</div>`;
+    } else if (totalScore <= 5) {
+      el.classList.add('med');
+      el.innerHTML = `<div class="risk-icon">🟡</div><div class="risk-text"><strong>Moderate Risk — See a Doctor Soon</strong>You have multiple concerning symptoms. We recommend scheduling a cardiac checkup within the next 1–2 weeks.</div>`;
+    } else {
+      el.classList.add('high');
+      el.innerHTML = `<div class="risk-icon">🔴</div><div class="risk-text"><strong>High Risk — Seek Medical Attention Now</strong>Your symptoms strongly suggest possible CHF. Please consult a cardiologist as soon as possible. Do not delay.</div>`;
+    }
+  }
+</script>
+</body>
+</html>
